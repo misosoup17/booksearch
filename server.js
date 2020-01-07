@@ -1,28 +1,31 @@
-require('dotenv').config();
-var express = require("express");
-var app = express();
-var PORT = process.env.PORT || 3001;
+const express = require("express");
 
-// Define middleware here
+const mongoose = require("mongoose");
+const routes = require("./routes");
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Configure body parsing for AJAX requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// Serve up static assets (usually on heroku)
+// Serve up static assets
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static("client/build"));
+  app.use(express.static("client/build"));
 }
 
-var mongoose = require("mongoose");
-var mongoURL = process.env.PROD_MONGODB || //"11111" fill this in later
-mongoose.connect(mongoURL, {useNewUrlParser: true})
-  .then(() => {
-    console.log("🗄 ==> Successfully connected to mongoDB.");
-  })
-  .catch((err) => {
-    console.log(`Error connecting to mongoDB: ${err}`);
-  });
+// Add routes, both API and view
+app.use(routes);
 
-require("./routes/api-routes")(app);
+// Connect to the Mongo DB
+mongoose.connect(
+  process.env.MONGODB_URI || "mongodb://localhost/googlebooks",
+  {
+    useCreateIndex: true,
+    useNewUrlParser: true
+  }
+);
 
-app.listen(PORT, () => {
-  console.log(`🌎 ==> API server now on port ${PORT}!`);
-});
+// Start the API server
+app.listen(PORT, () =>
+  console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`)
+);
