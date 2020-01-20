@@ -1,7 +1,7 @@
-var React = require('react');
-var ReactDom = require('react-dom');
+// Importing ReactDOM and our routes
+import React from "react";
+import ReactDOM from "react-dom";
+import routes from "./config/routes";
 
-//Main Component
-var Main = require('./Components/Main');
-
-ReactDOM.render(<Main />, document.getElementById('app'));
+// Rendering our router to the "app" div in index.html
+ReactDOM.render(routes, document.getElementById("app"));

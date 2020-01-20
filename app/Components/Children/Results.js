@@ -1,52 +1,47 @@
-// Include React 
-var React = require('react');
+import React, { Component } from 'react';
+import Helpers from '../../utils/helpers';
+import Panel from '../common/Panel';
 
-// Component creation
-var Results = React.createClass({
-
-	getInitialState: function(){
-		return {
-			title: "",
-			date: "",
-			url: "",
-			results: []
+class Results extends Component {
+	constructor() {
+		super();
+		this.state = {
+			articles: []
 		}
-	},
-
-	// When a user clicks save article
-	clickToSave: function(result){
-
-		this.props.saveArticle(result.headline.main, result.pub_date, result.web_url);
-
-	},
-
-	componentWillReceiveProps: function(nextProps){
-		var that = this;
-		var myResults = nextProps.results.map(function(search, i){
-			var boundClick = that.clickToSave.bind(that, search);
-			return <div className="list-group-item" key={i}><a href={search.web_url} target="_blank">{search.headline.main}</a><br />{search.pub_date}<br /><button type="button" className="btn btn-success" style={{'float': 'right', 'marginTop': '-39px'}} onClick={boundClick}>Save</button></div>
+		this.getSaved = this.getSaved.bind(this);
+		this.renderArticles = this.renderArticles.bind(this);
+	}
+	componentWillReceiveProps(nextProps) {
+		Helpers.getArticles(nextProps.topic, nextProps.startYear, nextProps.endYear).then((res) => {
+			this.setState({articles: res.data.response.docs});
 		});
-
-		this.setState({results: myResults});
-	},
-	
-	// Here we render the function
-	render: function(){
-		return(
-			<div className="container content">
-				<div className="panel panel-info">
-					<div className="panel-heading">
-						<h3 className="panel-title text-center"><strong>Results</strong></h3>
-					</div>
-					<div className="panel-body">
-							{this.state.results}
-					</div>
+	}
+	getSaved() {
+		this.props.getSaved();
+	}
+	renderArticles() {
+		return this.state.articles.map(article => (
+			<Panel
+				article={article}
+				key={article._id}
+				getSaved={this.getSaved}
+			/>
+		));
+	}
+	render() {
+		return (
+			<div className="container-fluid">
+				<div className="panel panel-default">
+				  	<div className="panel-heading">
+				    	<h3 className="panel-title">Results</h3>
+				  	</div>
+				  	<div className="panel-body">
+				  		{this.renderArticles()}
+				  	</div>
 				</div>
 			</div>
-
-		)
+		);
 	}
-});
+}
 
-// Export the component back for use in other files
-module.exports = Results;
+export default Results;
