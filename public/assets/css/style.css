@@ -1,0 +1,14 @@
+.jumbotron{
+	background-image: url(../img/Material-Design-Background-Undesigns-00.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-attachment: fixed;
+}
+.jumbotron h1{
+	font-family: 'Boogaloo', cursive;
+	text-align: center;
+	color: #cccccc;	
+}
+.content{
+	width: 75%;
+}
