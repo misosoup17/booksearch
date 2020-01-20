@@ -16,20 +16,15 @@ app.use(express.static(__dirname + "/public"));
 app.use("/", routes);
 
 // -------------------------------------------------
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://react_news:<2907>@reactnews-wz5wb.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
 
-var db = process.env.MONGODB_URI || "mongodb://localhost/booksearch";
-// Connect mongoose to our database
-mongoose.connect(db, function(error) {
-    // Log any errors connecting with mongoose
-    if (error) {
-      console.error(error);
-    }
-    // Or log a success message
-    else {
-      console.log("mongoose connection is successful");
-    }
-  });
-  
   // -------------------------------------------------
   
   // Listener
